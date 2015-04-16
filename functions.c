@@ -41,7 +41,62 @@ void print_header(FILE *file)
 	fprintf(file,"%s\n",header);
 }
 
-void print_comments_in_file(FILE *file, char *address, char *current_line)
+void print_comments_in_file(FILE *file, int address, char *current_line)
 {
-	fprintf( file,"%s\t\t\t\t\t%s", address, current_line);
+	fprintf( file,"%02d\t\t\t\t\t%s", address, current_line);
+}
+
+void trans_opcode(char opcode[],char t_opcode[])
+{
+		char op0[]="NOP";
+		char op1[]="LDD";
+		char op2[]="LDI";
+		char op3[]="STO";
+		char op4[]="MOV";
+		char op5[]="ADI";
+		char op6[]="ADF";
+		char op7[]="OR";
+		char op8[]="AND";
+		char op9[]="XOR";
+		char opA[]="ROR";
+		char opB[]="JMP";
+		char opC[]="HLT";
+		char opD[]="LDX";
+		char opE[]="STX";
+	
+	if(strcmp(opcode,op0))
+	{
+		t_opcode="00 00";
+	}
+	/*else if(strcmp())
+	{
+		
+	}
+	else if(strcmp())
+	{
+		
+	}
+	else if(strcmp())
+	{
+		
+	}
+	else if(strcmp())
+	{
+		
+	}
+	else if(strcmp())
+	{
+		
+	}
+	else if(strcmp())
+	{
+		
+	}else if(strcmp())
+	{
+		
+	}*/
+	else
+	{
+		
+	}
 }

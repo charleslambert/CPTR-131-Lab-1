@@ -40,3 +40,8 @@ void print_header(FILE *file)
 	
 	fprintf(file,"%s\n",header);
 }
+
+void print_comments_in_file(FILE *file, char *address, char *current_line)
+{
+	fprintf( file,"%s\t\t\t\t\t%s", address, current_line);
+}

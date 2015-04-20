@@ -36,17 +36,19 @@ char *replace_ext(char file[], char ext[])
 
 void print_header(FILE *file)
 {
-	char header[] ="Mem\tOpcode\tSource";
+	char header1[] ="Mem";
+	char header2[] ="Opcode";
+	char header3[] ="Source";
 	
-	fprintf(file,"%s\n",header);
+	fprintf(file,"%-12s%-12s%-12s\n",header1,header2,header3);
 }
 
 void print_comments_in_file(FILE *file, int address, char *current_line)
 {
-	fprintf( file,"%02d\t\t\t\t\t%s", address, current_line);
+	fprintf( file,"%02d                             %s", address, current_line);
 }
 
-void trans_opcode(char opcode[],char t_opcode[])
+void trans_opcode(char opcode[], char *t_opcode)
 {
 		char op0[]="NOP";
 		char op1[]="LDD";
@@ -64,39 +66,68 @@ void trans_opcode(char opcode[],char t_opcode[])
 		char opD[]="LDX";
 		char opE[]="STX";
 	
-	if(strcmp(opcode,op0))
+	if(strcmp(opcode,op0)==0)
 	{
-		t_opcode="00 00";
+		strcmp(t_opcode,"00 00");
 	}
-	/*else if(strcmp())
+	else if(strcmp(opcode,op1)==0)
 	{
-		
+		strcpy(t_opcode,"18 3C");
 	}
-	else if(strcmp())
+	else if(strcmp(opcode,op0)==0)
 	{
-		
+		strcmp(t_opcode,"25 3C");
 	}
-	else if(strcmp())
+	else if(strcmp(opcode,op0)==0)
 	{
-		
+		strcmp(t_opcode,"3C D2");
 	}
-	else if(strcmp())
+	else if(strcmp(opcode,op0)==0)
 	{
-		
+		strcmp(t_opcode,"4C 70");
 	}
-	else if(strcmp())
+	else if(strcmp(opcode,op0)==0)
 	{
-		
+		strcmp(t_opcode,"5C 3F");
 	}
-	else if(strcmp())
+	else if(strcmp(opcode,op0)==0)
 	{
-		
-	}else if(strcmp())
+		strcmp(t_opcode,"6B 3F");
+	}
+	else if(strcmp(opcode,op0)==0)
 	{
-		
-	}*/
+		strcmp(t_opcode,"75 3F");
+	}
+	else if(strcmp(opcode,op0)==0)
+	{
+		strcmp(t_opcode,"8C 26");
+	}
+	else if(strcmp(opcode,op0)==0)
+	{
+		strcmp(t_opcode,"9C 3F");
+	}
+	else if(strcmp(opcode,op0)==0)
+	{
+		strcmp(t_opcode,"AC 02");
+	}
+	else if(strcmp(opcode,op0)==0)
+	{
+		strcmp(t_opcode,"BC D2");
+	}
+	else if(strcmp(opcode,op0)==0)
+	{
+		strcmp(t_opcode,"C0 00");
+	}
+	else if(strcmp(opcode,op0)==0)
+	{
+		strcmp(t_opcode,"D5 C0");
+	}
+	else if(strcmp(opcode,op0)==0)
+	{
+		strcmp(t_opcode,"E5 C0");
+	}
 	else
 	{
-		
+		strcmp(t_opcode,"FAIL!");
 	}
 }

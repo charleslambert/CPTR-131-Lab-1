@@ -6,9 +6,11 @@ int main(int argc, char *argv[])
 	FILE *file_asm;
 	FILE *file_obj;
 	FILE *file_lst;
-	char *opcode;
+	char t_opcode[6];
 	int address;
-	char *source;
+	char *opcode;
+	char *source1;
+	char *source2;
 	char current_line[100];
 
 	
@@ -27,7 +29,6 @@ int main(int argc, char *argv[])
 	print_header(file_lst);
 	
 	address = 0;
-	printf("%d\n",current_line[0]);
 	while(fgets(current_line, 100,file_asm)!=NULL)
 	{	
 		if(current_line[0]==';')
@@ -37,11 +38,21 @@ int main(int argc, char *argv[])
 		}
 		else if(current_line[0]=='\n')
 		{
-			fprintf(file_lst,"%02d\n",address);
+			fprintf(file_lst,"%02X\n",address);
 		}
 		else
 		{
+			opcode = strtok(current_line,"\t");
+			source1 = strtok(NULL,"\t");
+			source2 = strtok(NULL,"\t");
 			
+			
+			trans_opcode(opcode,t_opcode);
+			
+			printf("%d",strlen(t_opcode));
+			
+			fprintf(file_lst, "%02X          %-12s%s%-20s%-20s",address,t_opcode,opcode,source1,source2);
+			address +=2;
 		}
 	}
 }

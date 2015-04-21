@@ -46,7 +46,7 @@ void print_comments_in_file(FILE *file, int address, char *current_line)
 	fprintf( file,"%02d\t\t\t%s", address, current_line);
 }
 
-void trans_opcode(char opcode[], char *t_opcode)
+char *trans_opcode(char opcode[], char *t_opcode)
 {
 		char op0[]="NOP";
 		char op1[]="LDD";
@@ -128,4 +128,6 @@ void trans_opcode(char opcode[], char *t_opcode)
 	{
 		strcpy(t_opcode,opcode);
 	}
+
+	return t_opcode;
 }

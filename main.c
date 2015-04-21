@@ -45,9 +45,18 @@ int main(int argc, char *argv[])
 			source1 = strtok(NULL,"\t");
 			source2 = strtok(NULL,"\t");
 			
-			trans_opcode(opcode,t_opcode);
+			printf("%s",trans_opcode(opcode,t_opcode));
+
 			
-			fprintf(file_lst, "%02X\t%s\t%s %-15s%s",address,t_opcode,opcode,source1,source2);
+			if(strcmp(opcode,"HLT")==0 || strcmp(opcode,"NOP")== 0)
+			{
+				fprintf(file_lst, "%02X\t%s\t%-19s%s",address,t_opcode,opcode,source1);
+			}
+			else
+			{
+				fprintf(file_lst, "%02X\t%s\t%s %-15s%s",address,t_opcode,opcode,source1,source2);
+			}
+			
 			address +=2;
 		}
 	}

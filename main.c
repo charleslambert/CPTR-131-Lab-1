@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 	FILE *file_asm;
 	FILE *file_obj;
 	FILE *file_lst;
-	char t_opcode[6];
+	char *t_opcode;
 	int address;
 	char *opcode;
 	char *source1;
@@ -24,8 +24,7 @@ int main(int argc, char *argv[])
 	file_asm = open_file(file, ".asm", "r");
 	file_obj = open_file(file, ".obj", "w");
 	file_lst = open_file(file, ".lst", "w");
-	
-	print_header(file_obj);
+
 	print_header(file_lst);
 	
 	address = 0;
@@ -45,7 +44,7 @@ int main(int argc, char *argv[])
 			source1 = strtok(NULL,"\t");
 			source2 = strtok(NULL,"\t");
 			
-			printf("%s",trans_opcode(opcode,t_opcode));
+			t_opcode=trans_opcode(opcode);
 
 			
 			if(strcmp(opcode,"HLT")==0 || strcmp(opcode,"NOP")== 0)
@@ -57,6 +56,8 @@ int main(int argc, char *argv[])
 				fprintf(file_lst, "%02X\t%s\t%s %-15s%s",address,t_opcode,opcode,source1,source2);
 			}
 			
+			fprintf(file_obj,"%s ",t_opcode);
+
 			address +=2;
 		}
 	}

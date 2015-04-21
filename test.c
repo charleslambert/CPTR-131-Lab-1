@@ -2,12 +2,13 @@
 #include "functions.h"
 
 
-void main()
+int main()
 {
 	test_replace_ext();
 	test_delete_ext();
 	test_is_a_file();
 	test_trans_opcode();
+	return 0;
 }
 
 void test_replace_ext()
@@ -62,13 +63,11 @@ void test_is_a_file()
 void test_trans_opcode()
 {
 	char op[3]="NOP";
-	char top[5];
 	
 	printf("Test trans_opcode\n");
 	
 	printf("Test 1\n");
-	trans_opcode(op,top);
-	assert(strcmp(top,"00 00"));
+	assert(strcmp(trans_opcode(op),"00 00"));
 	
 	printf("Tests Passed\n\n");
 }

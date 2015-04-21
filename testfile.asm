@@ -12,7 +12,7 @@ LDI	R4, 00	R4 = running total; initialize to zero
 
 ADI	R4, R4, R3	Add to running total
 ADI	R2, R2, R1	Add 1 to the loop counter; increment the loop counter
-JMP	R2, 12	Jump to 12 if R2 == R0; we’re done
-JMP	R0, 0A	Otherwise jump to 0A (always, since R0 == R0)
-STO	R4, D6	Store the product into D6
-HLT			End of program
+JMP	R2, 12		Jump to 12 if R2 == R0; we’re done
+JMP	R0, 0A		Otherwise jump to 0A (always, since R0 == R0)
+STO	R4, D6		Store the product into D6
+HLT				End of program

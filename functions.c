@@ -46,7 +46,7 @@ void print_comments_in_file(FILE *file, int address, char *current_line)
 	fprintf( file,"%02d\t\t\t%s", address, current_line);
 }
 
-char *trans_opcode(char opcode[], char *t_opcode)
+char *trans_opcode(char opcode[])
 {
 		char op0[]="NOP";
 		char op1[]="LDD";
@@ -63,70 +63,71 @@ char *trans_opcode(char opcode[], char *t_opcode)
 		char opC[]="HLT";
 		char opD[]="LDX";
 		char opE[]="STX";
+		char *t_opcode;
 
 	if(strcmp(opcode,op0)==0)
 	{
-		strcpy(t_opcode,"00 00");
+		t_opcode="00 00";
 	}
 	else if(strcmp(opcode,op1)==0)
 	{
-		strcpy(t_opcode,"18 3C");
+		t_opcode="18 3C";
 	}
 	else if(strcmp(opcode,op2)==0)
 	{
-		strcpy(t_opcode,"25 3C");
+		t_opcode="25 3C";
 	}
 	else if(strcmp(opcode,op3)==0)
 	{
-		strcpy(t_opcode,"3C D2");
+		t_opcode="3C D2";
 	}
 	else if(strcmp(opcode,op4)==0)
 	{
-		strcpy(t_opcode,"4C 70");
+		t_opcode="4C 70";
 	}
 	else if(strcmp(opcode,op5)==0)
 	{
-		strcpy(t_opcode,"5C 3F");
+		t_opcode="5C 3F";
 	}
 	else if(strcmp(opcode,op6)==0)
 	{
-		strcpy(t_opcode,"6B 3F");
+		t_opcode="6B 3F";
 	}
 	else if(strcmp(opcode,op7)==0)
 	{
-		strcpy(t_opcode,"75 3F");
+		t_opcode="75 3F";
 	}
 	else if(strcmp(opcode,op8)==0)
 	{
-		strcpy(t_opcode,"8C 26");
+		t_opcode="8C 26";
 	}
 	else if(strcmp(opcode,op9)==0)
 	{
-		strcpy(t_opcode,"9C 3F");
+		t_opcode="9C 3F";
 	}
 	else if(strcmp(opcode,opA)==0)
 	{
-		strcpy(t_opcode,"AC 02");
+		t_opcode="AC 02";
 	}
 	else if(strcmp(opcode,opB)==0)
 	{
-		strcpy(t_opcode,"BC D2");
+		t_opcode="BC D2";
 	}
 	else if(strcmp(opcode,opC)==0)
 	{
-		strcpy(t_opcode,"C0 00");
+		t_opcode="C0 00";
 	}
 	else if(strcmp(opcode,opD)==0)
 	{
-		strcpy(t_opcode,"D5 C0");
+		t_opcode="D5 C0";
 	}
 	else if(strcmp(opcode,opE)==0)
 	{
-		strcpy(t_opcode,"E5 C0");
+		t_opcode="E5 C0";
 	}
 	else
 	{
-		strcpy(t_opcode,opcode);
+		t_opcode=opcode;
 	}
 
 	return t_opcode;

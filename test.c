@@ -19,12 +19,10 @@ void test_replace_ext()
 	printf("\nTest replace_ext\n");
 	
 	printf("Test 1\n");
-	replace_ext(file, ".txt");
-	assert(strcmp(file,"men.txt"));
+	assert(strcmp(replace_ext(file, ".txt"),"men.txt"));
 	
 	printf("test 2\n");
-	replace_ext(file2, ".ast");
-	assert(strcmp(file2,"men.ast "));
+	assert(strcmp(replace_ext(file2, ".ast"),"men.ast "));
 	
 	printf("All Tests Passed\n\n");
 }
@@ -36,8 +34,7 @@ void test_delete_ext()
 	printf("Test delete_ext\n");
 	
 	printf("Test 1\n");
-	delete_ext(file3);
-	assert(strcmp(file3,"file    "));
+	assert(strcmp(delete_ext(file3),"file    "));
 	
 	printf("All Tests Passed\n\n");
 }

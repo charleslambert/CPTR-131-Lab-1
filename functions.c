@@ -1,8 +1,11 @@
 #include "functions.h"
 
-void delete_ext(char file_name[])
+char *delete_ext(char file_name[])
 {
+
 	*strrchr(file_name, '.') = 0;
+
+	return file_name;
 }
 
 int is_a_file(char file_name[])
@@ -26,10 +29,13 @@ FILE *open_file(char file[], char ext[], char rorw[])
 
 char *replace_ext(char file[], char ext[])
 {
-	delete_ext(file);
-	strcat(file,ext);
+	char *trunc_file;
+	char *file_ext;
 
-	return file;
+	trunc_file = delete_ext(file);
+	file_ext = strcat(trunc_file,ext);
+
+	return file_ext;
 }
 
 void print_header(FILE *file)

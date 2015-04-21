@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-void delete_ext(char file_name[]);
+char *delete_ext(char file_name[]);
 void print_header(FILE *file);
 FILE *open_file(char file[], char ext[], char rorw[]);
 char *replace_ext(char file[], char ext[]);

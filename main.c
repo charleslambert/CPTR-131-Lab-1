@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
 		if(current_line[0]==';')
 		{
 			print_comments_in_file(file_lst, address, current_line);
-			printf("%s\n",current_line);
 		}
 		else if(current_line[0]=='\n')
 		{
@@ -46,13 +45,12 @@ int main(int argc, char *argv[])
 			source1 = strtok(NULL,"\t");
 			source2 = strtok(NULL,"\t");
 			
-			
 			trans_opcode(opcode,t_opcode);
 			
-			printf("%d",strlen(t_opcode));
-			
-			fprintf(file_lst, "%02X          %-12s%s%-20s%-20s",address,t_opcode,opcode,source1,source2);
+			fprintf(file_lst, "%02X\t%s\t%s %-15s%s",address,t_opcode,opcode,source1,source2);
 			address +=2;
 		}
 	}
+
+	return 0;
 }

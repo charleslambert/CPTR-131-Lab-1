@@ -20,14 +20,13 @@ void test_replace_ext()
 	
 	printf("Test 1\n");
 	replace_ext(file, ".txt");
-	printf("%s\n",file);
 	assert(strcmp(file,"men.txt"));
 	
 	printf("test 2\n");
 	replace_ext(file2, ".ast");
 	assert(strcmp(file2,"men.ast "));
 	
-	printf("Tests Passed\n\n");
+	printf("All Tests Passed\n\n");
 }
 
 void test_delete_ext()
@@ -38,10 +37,9 @@ void test_delete_ext()
 	
 	printf("Test 1\n");
 	delete_ext(file3);
-	printf("%s\n",file3);
 	assert(strcmp(file3,"file    "));
 	
-	printf("Tests Passed\n\n");
+	printf("All Tests Passed\n\n");
 }
 
 void test_is_a_file()
@@ -49,25 +47,33 @@ void test_is_a_file()
 	char file4[]= "file.txt";
 	char file5[]= "file";
 	
-	printf("Test is_a_file");
+	printf("Test is_a_file\n");
 	
 	printf("Test 1\n");
 	assert(is_a_file(file4)==1);
 	
-	printf("Test2\n");
+	printf("Test 2\n");
 	assert(is_a_file(file5)==0);
 	
-	printf("Tests Passed\n\n");
+	printf("All Tests Passed\n\n");
 }
 
 void test_trans_opcode()
 {
-	char op[3]="NOP";
+	char op1[3]="NOP";
+	char op2[2]="OR";
+	char op3[3]="DDD";
 	
 	printf("Test trans_opcode\n");
 	
 	printf("Test 1\n");
-	assert(strcmp(trans_opcode(op),"00 00"));
-	
-	printf("Tests Passed\n\n");
+	assert(strcmp(trans_opcode(op1),"00 00"));
+
+	printf("Test 2\n");
+	assert(strcmp(trans_opcode(op2),"75 3F"));
+
+	printf("Test 3\n");
+	assert(strcmp(trans_opcode(op3),"DDD"));
+
+	printf("All Tests Passed\n\n");
 }

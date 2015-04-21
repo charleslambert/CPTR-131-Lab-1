@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				fprintf(file_lst, "%02X\t%s\t%s %-15s%s",address,t_opcode,opcode,source1,source2);
+				fprintf(file_lst, "%02X\t%s\t%s\t%-15s%s",address,t_opcode,opcode,source1,source2);
 			}
 			
 			fprintf(file_obj,"%s ",t_opcode);

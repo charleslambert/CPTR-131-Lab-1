@@ -1,7 +1,4 @@
 #include "functions.h"
-#define MAXBUF 1024
-#define MACH_MAX 7
-#define FILE_N_MAX 20
 
 int main(int argc, char *argv[])
 {
@@ -14,34 +11,37 @@ int main(int argc, char *argv[])
 	char output_line[MAXBUF];
 	char machine_code[MACH_MAX];
 
-	//Take in input and check that the input is a valid file_name
+	//Take in input and check that the input is a valid file_name.
 	printf("What file would you like to assemble? :");
 	scanf("%s", file);
-	if(is_a_file(file)==0)
-	{
-			exit(1);
-	}
+	check_file_validity(file);
 	
-	//Open input file and create files to be written in
+	//Open input file and create files to be written in.
 	file_asm = open_file(file, ".asm", "r");
 	file_obj = open_file(file, ".obj", "w");
 	file_lst = open_file(file, ".lst", "w");
 
 	print_header(file_lst);
 
-	//Loop through each line of text and extract the text
+	//Iterate through each line of text from .asm file and extract the text as string.
 	while(fgets(current_line, MAXBUF, file_asm)!=NULL)
 	{	
-		//Passed text is evaluated and an approriate output string is created
-		address=assemble_line(current_line,address, output_line);
+		//Passed text is evaluated and an approriate output string is created.
+
+		//converts opcodes into machine codes and formats given comments and variables into readable format.
+		//outputs a string to be printed into .lst file.
+		//assemble_line returns the address for the next line in the output.
+		address=assemble_line(current_line, address, output_line);
+
+		//object_machine_code converts opcodes into machine code and outputs result as string to be printed into .obj file.
 		object_machine_code(current_line, machine_code);
 
-		//Output is printed into files
-		fputs(output_line,file_lst);
-		fprintf(file_obj,"%s", machine_code);
+		//Output strings are printed into approriate files.
+		fputs(output_line, file_lst);
+		fprintf(file_obj, "%s", machine_code);
 	}
 
-	//Close all files
+	//Close all files.
 	fclose(file_asm);
 	fclose(file_obj);
 	fclose(file_lst);

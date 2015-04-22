@@ -1,16 +1,23 @@
 #include "functions.h"
 
-//TODO Combine is_a_file with delete_ext to so as to check errors
-char *delete_ext(char file_name[])
+int delete_ext(char file_name[])
 {
-
-	*strrchr(file_name, '.') = 0;
+	if (access(file_name,F_OK)==0)
+	{
+		*strrchr(file_name, '.') = 0;
+		return 0;
+	}
+	else
+	{
+		printf("Not a proper file name.");
+		return 1;
+	}
+	
 
 	return file_name;
 }
 
-//TODO Check actual extension
-int is_a_file(char file_name[])
+int check_file_validity(char file_name[])
 {
 	if (access(file_name,F_OK)==0)
 	{
@@ -19,10 +26,11 @@ int is_a_file(char file_name[])
 	else
 	{
 		printf("This is not a proper file name\n");
+		exit(1);
 		return 0;
 	}
 }
-// 1
+
 
 FILE *open_file(char file[], char ext[], char rorw[])
 {
@@ -31,11 +39,10 @@ FILE *open_file(char file[], char ext[], char rorw[])
 
 char *replace_ext(char file[], char ext[])
 {
-	char *trunc_file;
 	char *file_ext;
 
-	trunc_file = delete_ext(file);
-	file_ext = strcat(trunc_file,ext);
+	delete_ext(file);
+	file_ext = strcat(file,ext);
 
 	return file_ext;
 }
@@ -47,11 +54,6 @@ void print_header(FILE *file)
 	char header3[7] ="Source";
 
 	fprintf(file,"%s\t%s\t%s\t\n",header1,header2,header3);
-}
-
-void print_comments_in_file(char *current_line, int address,char output_line[])
-{
-	sprintf(output_line,"%02X\t\t\t%s", address, current_line);
 }
 
 char *trans_opcode(char opcode[], char machine_code[])
@@ -125,40 +127,54 @@ char *trans_opcode(char opcode[], char machine_code[])
 	return machine_code;
 }
 
-int assemble_line(char current_line[], int address, char output_line[])
+void create_comment_string(char *current_line, int address,char output_line[])
+{
+	sprintf(output_line,"%02X\t\t\t%s", address, current_line);
+}
+
+void create_empty_line_string(int address, char output_line[])
+{
+	sprintf(output_line,"%02X\n",address);
+}
+
+void create_formated_line_string(char current_line[], int address, char output_line[])
 {
 	char *opcode;
 	char *source1;
 	char *source2;
-	char machine_code[7];
+	char machine_code[MACH_MAX];
 
-	if(current_line[0]==';')
+	opcode = strtok(current_line,"\t");
+	source1 = strtok(NULL,"\t");
+	source2 = strtok(NULL,"\t");
+	
+	strcpy(machine_code,trans_opcode(opcode,machine_code));
+		
+	if(strcmp(opcode,"HLT")== 0 || strcmp(opcode,"NOP")== 0)
 	{
-		print_comments_in_file(current_line, address, output_line);
-	}
-	else if(current_line[0]=='\n')
-	{
-		sprintf(output_line,"%02X\n",address);
+		sprintf(output_line,"%02X\t%s\t%-19s%s",address,machine_code,opcode,source1);
 	}
 	else
 	{
-		opcode = strtok(current_line,"\t");
-		source1 = strtok(NULL,"\t");
-		source2 = strtok(NULL,"\t");
-		
-		strcpy(machine_code,trans_opcode(opcode,machine_code));
+		sprintf(output_line,"%02X\t%s\t%s\t%-15s%s",address,machine_code,opcode,source1,source2);
+	}
 
-			
-		if(strcmp(opcode,"HLT")== 0 || strcmp(opcode,"NOP")== 0)
-		{
-			sprintf(output_line,"%02X\t%s\t%-19s%s",address,machine_code,opcode,source1);
-		}
-		else
-		{
-			sprintf(output_line,"%02X\t%s\t%s\t%-15s%s",address,machine_code,opcode,source1,source2);
-		}
+	address += 2;
+}
 
-		address += 2;
+int assemble_line(char current_line[], int address, char output_line[])
+{
+	if(current_line[0]==';')
+	{
+		create_comment_string(current_line, address, output_line);
+	}
+	else if(current_line[0]=='\n')
+	{
+		create_empty_line_string(address, output_line);
+	}
+	else
+	{
+		create_formated_line_string(current_line, address, output_line);
 	}
 
 	return address;

@@ -8,6 +8,7 @@ int main()
 	test_delete_ext();
 	test_is_a_file();
 	test_trans_opcode();
+	test_assemble_line();
 	return 0;
 }
 
@@ -73,4 +74,17 @@ void test_trans_opcode()
 	assert(strcmp(trans_opcode(op3),"DDD"));
 
 	printf("All Tests Passed\n\n");
+}
+
+void test_assemble_line()
+{
+	int address1=0;
+	printf("Test assemble_line");
+	char i1[]="LDD\tR0, 3C,\tR0 = upper limit for the loop; use to end the loop";
+	char o1[]="00\t18 3C\tLDD\tR0, 3C\t\t\t\t\t\t\t\t\tR0 = upper limit for the loop; use to end the loop";
+	char mach[5];
+
+	printf("Test 1\n");
+	assert(aseemble_line(i1,address,mach,o1)==2);
+	assert(strcmp(i1,o1));
 }

@@ -1,5 +1,6 @@
 #include "functions.h"
 
+//TODO Combine is_a_file with delete_ext to so as to check errors
 char *delete_ext(char file_name[])
 {
 
@@ -8,9 +9,10 @@ char *delete_ext(char file_name[])
 	return file_name;
 }
 
+//TODO Check actual extension
 int is_a_file(char file_name[])
 {
-	if (strrchr(file_name,'.')!=NULL)
+	if (access(file_name,F_OK)==0)
 	{
 		return 1;
 	}
@@ -20,7 +22,7 @@ int is_a_file(char file_name[])
 		return 0;
 	}
 }
-
+// 1
 
 FILE *open_file(char file[], char ext[], char rorw[])
 {
@@ -40,101 +42,139 @@ char *replace_ext(char file[], char ext[])
 
 void print_header(FILE *file)
 {
-	char header1[] ="Mem";
-	char header2[] ="Opcode";
-	char header3[] ="Source";
+	char header1[4] ="Mem";
+	char header2[7] ="Opcode";
+	char header3[7] ="Source";
 
 	fprintf(file,"%s\t%s\t%s\t\n",header1,header2,header3);
 }
 
-void print_comments_in_file(FILE *file, int address, char *current_line)
+void print_comments_in_file(char *current_line, int address,char output_line[])
 {
-	fprintf( file,"%02d\t\t\t%s", address, current_line);
+	sprintf(output_line,"%02X\t\t\t%s", address, current_line);
 }
 
-char *trans_opcode(char opcode[])
+char *trans_opcode(char opcode[], char machine_code[])
 {
-		char op0[]="NOP";
-		char op1[]="LDD";
-		char op2[]="LDI";
-		char op3[]="STO";
-		char op4[]="MOV";
-		char op5[]="ADI";
-		char op6[]="ADF";
-		char op7[]="OR";
-		char op8[]="AND";
-		char op9[]="XOR";
-		char opA[]="ROR";
-		char opB[]="JMP";
-		char opC[]="HLT";
-		char opD[]="LDX";
-		char opE[]="STX";
-		char *t_opcode;
 
-	if(strcmp(opcode,op0)==0)
+	if(strcmp(opcode,OP_0)==0)
 	{
-		t_opcode="00 00";
+		strcpy(machine_code,"00 00");
 	}
-	else if(strcmp(opcode,op1)==0)
+	else if(strcmp(opcode,OP_1)==0)
 	{
-		t_opcode="18 3C";
+		strcpy(machine_code,"18 3C");
 	}
-	else if(strcmp(opcode,op2)==0)
+	else if(strcmp(opcode,OP_2)==0)
 	{
-		t_opcode="25 3C";
+		strcpy(machine_code,"25 3C");
 	}
-	else if(strcmp(opcode,op3)==0)
+	else if(strcmp(opcode,OP_3)==0)
 	{
-		t_opcode="3C D2";
+		strcpy(machine_code,"3C D2");
 	}
-	else if(strcmp(opcode,op4)==0)
+	else if(strcmp(opcode,OP_4)==0)
 	{
-		t_opcode="4C 70";
+		strcpy(machine_code,"4C 70");
 	}
-	else if(strcmp(opcode,op5)==0)
+	else if(strcmp(opcode,OP_5)==0)
 	{
-		t_opcode="5C 3F";
+		strcpy(machine_code,"5C 3F");
 	}
-	else if(strcmp(opcode,op6)==0)
+	else if(strcmp(opcode,OP_6)==0)
 	{
-		t_opcode="6B 3F";
+		strcpy(machine_code,"6B 3F");
 	}
-	else if(strcmp(opcode,op7)==0)
+	else if(strcmp(opcode,OP_7)==0)
 	{
-		t_opcode="75 3F";
+		strcpy(machine_code,"75 3F");
 	}
-	else if(strcmp(opcode,op8)==0)
+	else if(strcmp(opcode,OP_8)==0)
 	{
-		t_opcode="8C 26";
+		strcpy(machine_code,"8C 26");
 	}
-	else if(strcmp(opcode,op9)==0)
+	else if(strcmp(opcode,OP_9)==0)
 	{
-		t_opcode="9C 3F";
+		strcpy(machine_code,"9C 3F");
 	}
-	else if(strcmp(opcode,opA)==0)
+	else if(strcmp(opcode,OP_A)==0)
 	{
-		t_opcode="AC 02";
+		strcpy(machine_code,"AC 02");
 	}
-	else if(strcmp(opcode,opB)==0)
+	else if(strcmp(opcode,OP_B)==0)
 	{
-		t_opcode="BC D2";
+		strcpy(machine_code,"BC D2");
 	}
-	else if(strcmp(opcode,opC)==0)
+	else if(strcmp(opcode,OP_C)==0)
 	{
-		t_opcode="C0 00";
+		strcpy(machine_code,"C0 00");
 	}
-	else if(strcmp(opcode,opD)==0)
+	else if(strcmp(opcode,OP_D)==0)
 	{
-		t_opcode="D5 C0";
+		strcpy(machine_code,"D5 C0");
 	}
-	else if(strcmp(opcode,opE)==0)
+	else if(strcmp(opcode,OP_E)==0)
 	{
-		t_opcode="E5 C0";
+		strcpy(machine_code,"E5 C0");
 	}
 	else
 	{
-		t_opcode=opcode;
+		strcpy(machine_code,opcode);
 	}
 
-	return t_opcode;
+	return machine_code;
+}
+
+int assemble_line(char current_line[], int address, char output_line[])
+{
+	char *opcode;
+	char *source1;
+	char *source2;
+	char machine_code[7];
+
+	if(current_line[0]==';')
+	{
+		print_comments_in_file(current_line, address, output_line);
+	}
+	else if(current_line[0]=='\n')
+	{
+		sprintf(output_line,"%02X\n",address);
+	}
+	else
+	{
+		opcode = strtok(current_line,"\t");
+		source1 = strtok(NULL,"\t");
+		source2 = strtok(NULL,"\t");
+		
+		strcpy(machine_code,trans_opcode(opcode,machine_code));
+
+			
+		if(strcmp(opcode,"HLT")== 0 || strcmp(opcode,"NOP")== 0)
+		{
+			sprintf(output_line,"%02X\t%s\t%-19s%s",address,machine_code,opcode,source1);
+		}
+		else
+		{
+			sprintf(output_line,"%02X\t%s\t%s\t%-15s%s",address,machine_code,opcode,source1,source2);
+		}
+
+		address += 2;
+	}
+
+	return address;
+}
+
+void object_machine_code(char current_line[], char machine_code[])
+{
+	char *opcode;
+
+	if(current_line[0]!='\n' && current_line[0]!=';')
+	{
+		opcode = strtok(current_line,"\t");
+		sprintf(machine_code,"%s ",trans_opcode(opcode,machine_code));
+	}
+	else
+	{
+		machine_code[0] = '\0';
+	}
 }

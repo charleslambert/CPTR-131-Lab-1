@@ -1,4 +1,5 @@
 #include "functions.h"
+#define MAXBUF 1024
 
 int main(int argc, char *argv[])
 {
@@ -6,12 +7,10 @@ int main(int argc, char *argv[])
 	FILE *file_asm;
 	FILE *file_obj;
 	FILE *file_lst;
-	char *t_opcode;
 	int address;
-	char *opcode;
-	char *source1;
-	char *source2;
-	char current_line[100];
+	char current_line[MAXBUF];
+	char output_line[MAXBUF];
+	char machine_code[7];
 
 	
 	printf("What file would you like to assemble? :");
@@ -28,39 +27,19 @@ int main(int argc, char *argv[])
 	print_header(file_lst);
 	
 	address = 0;
-	while(fgets(current_line, 100,file_asm)!=NULL)
+
+	while(fgets(current_line, MAXBUF, file_asm)!=NULL)
 	{	
-		if(current_line[0]==';')
-		{
-			print_comments_in_file(file_lst, address, current_line);
-		}
-		else if(current_line[0]=='\n')
-		{
-			fprintf(file_lst,"%02X\n",address);
-		}
-		else
-		{
-			opcode = strtok(current_line,"\t");
-			source1 = strtok(NULL,"\t");
-			source2 = strtok(NULL,"\t");
-			
-			t_opcode=trans_opcode(opcode);
+		address=assemble_line(current_line,address, output_line);
+		object_machine_code(current_line, machine_code);
 
-			
-			if(strcmp(opcode,"HLT")==0 || strcmp(opcode,"NOP")== 0)
-			{
-				fprintf(file_lst, "%02X\t%s\t%-19s%s",address,t_opcode,opcode,source1);
-			}
-			else
-			{
-				fprintf(file_lst, "%02X\t%s\t%s\t%-15s%s",address,t_opcode,opcode,source1,source2);
-			}
-			
-			fprintf(file_obj,"%s ",t_opcode);
-
-			address +=2;
-		}
+		fputs(output_line,file_lst);
+		fprintf(file_obj,"%s", machine_code);
 	}
+
+	fclose(file_asm);
+	fclose(file_obj);
+	fclose(file_lst);
 
 	return 0;
 }

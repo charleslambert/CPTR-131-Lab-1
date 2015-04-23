@@ -14,7 +14,10 @@ int main(int argc, char *argv[])
 	//Take in input and check that the input is a valid file_name.
 	printf("What file would you like to assemble? :");
 	scanf("%s", file);
-	check_file_validity(file);
+	if (check_file_validity(file)==0)
+	{
+		exit(1);
+	}
 	
 	//Open input file and create files to be written in.
 	file_asm = open_file(file, ".asm", "r");

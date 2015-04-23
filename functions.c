@@ -60,47 +60,47 @@ char *trans_opcode(char opcode[], char machine_code[])
 	}
 	else if(strcmp(opcode,OP_1)==0)
 	{
-		strcpy(machine_code,"18 3C");
+		strcpy(machine_code,"1    ");
 	}
 	else if(strcmp(opcode,OP_2)==0)
 	{
-		strcpy(machine_code,"25 3C");
+		strcpy(machine_code,"2    ");
 	}
 	else if(strcmp(opcode,OP_3)==0)
 	{
-		strcpy(machine_code,"3C D2");
+		strcpy(machine_code,"3    ");
 	}
 	else if(strcmp(opcode,OP_4)==0)
 	{
-		strcpy(machine_code,"4C 70");
+		strcpy(machine_code,"4    ");
 	}
 	else if(strcmp(opcode,OP_5)==0)
 	{
-		strcpy(machine_code,"5C 3F");
+		strcpy(machine_code,"5    ");
 	}
 	else if(strcmp(opcode,OP_6)==0)
 	{
-		strcpy(machine_code,"6B 3F");
+		strcpy(machine_code,"6    ");
 	}
 	else if(strcmp(opcode,OP_7)==0)
 	{
-		strcpy(machine_code,"75 3F");
+		strcpy(machine_code,"7    ");
 	}
 	else if(strcmp(opcode,OP_8)==0)
 	{
-		strcpy(machine_code,"8C 26");
+		strcpy(machine_code,"8    ");
 	}
 	else if(strcmp(opcode,OP_9)==0)
 	{
-		strcpy(machine_code,"9C 3F");
+		strcpy(machine_code,"9    ");
 	}
 	else if(strcmp(opcode,OP_A)==0)
 	{
-		strcpy(machine_code,"AC 02");
+		strcpy(machine_code,"A    ");
 	}
 	else if(strcmp(opcode,OP_B)==0)
 	{
-		strcpy(machine_code,"BC D2");
+		strcpy(machine_code,"B    ");
 	}
 	else if(strcmp(opcode,OP_C)==0)
 	{
@@ -108,11 +108,11 @@ char *trans_opcode(char opcode[], char machine_code[])
 	}
 	else if(strcmp(opcode,OP_D)==0)
 	{
-		strcpy(machine_code,"D5 C0");
+		strcpy(machine_code,"D    ");
 	}
 	else if(strcmp(opcode,OP_E)==0)
 	{
-		strcpy(machine_code,"E5 C0");
+		strcpy(machine_code,"E    ");
 	}
 	else
 	{
@@ -144,17 +144,89 @@ int assemble_line(char current_line[], int address, char output_line[])
 void object_machine_code(char current_line[], char machine_code[])
 {
 	char *opcode;
+	char *operands;
+	char *operand;
+
 
 	if(current_line[0]!='\n' && current_line[0]!=';')
 	{
 		opcode = strtok(current_line,"\t");
-		sprintf(machine_code,"%s ",trans_opcode(opcode,machine_code));
+		printf("%s\n", opcode);
+		operands = strtok(NULL,"\t");
+		trans_opcode(opcode,machine_code);
+		printf("%c\n",machine_code[0]);
+		if(machine_code[0]>='5' || machine_code[0]<= '9')
+		{
+			exit(0);
+			operand = strtok(operands,",");
+			//printf("%c\n",operand[1]);
+			machine_code[1] = operand[1];
+			
+			operand = strtok(NULL,",");
+			//printf("%c\n",operand[1]);
+			machine_code[3] = operand[1];
+
+			operand = strtok(NULL,",");
+			machine_code[4] = operand[1];
+			exit(0);
+		}
+		else if(machine_code[0]=='4'||machine_code[0]=='D'||machine_code[0]=='E')
+		{
+			operand = strtok(operands,",");
+			machine_code[1] = operand[1];
+			
+			operand = strtok(operands,",");
+			machine_code[3] = operand[2];
+
+			machine_code[4] = '0';
+		}
+		else if((machine_code[0]>='1'||machine_code[0]<='3')||machine_code[0]=='B')
+		{
+			operand = strtok(operands,",");
+			printf("Face\n");
+			machine_code[1] = operand[2];
+			printf("%c",operand[2]);
+
+			exit(0);
+			operand = strtok(operands,",");
+			machine_code[3] = operand[0];
+
+			machine_code[4] = operand[1];
+		}
+		else
+		{
+			printf("dumb");
+		}
+
+		/*operand = strtok(current_line, "\t");
+
+		reference = strok(operand,",");
+		reg_or_val(reference, machine_code);
+
+		while(reference!=NULL)
+		{
+			reg_or_val(reference, machine_code);
+		}
+		*/
+
+		sprintf(machine_code,"%s ",machine_code);
 	}
 	else
 	{
 		machine_code[0] = '\0';
 	}
 }
+
+/*
+void reg_or_val(char *reference, char machine_code[])
+{
+	if(*reference[0]=='R')
+	{
+		machine_code[]
+	}
+}
+*/
+
 
 void create_comment_string(char *current_line, int address,char output_line[])
 {

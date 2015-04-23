@@ -2,18 +2,19 @@
 
 int main(int argc, char *argv[])
 {
-	char file[FILE_N_MAX];
+	char file[FILE_N_MAX]="testfile.asm";
 	FILE *file_asm;
 	FILE *file_obj;
 	FILE *file_lst;
 	int address = 0;
 	char current_line[MAXBUF];
+	char current_line2[MAXBUF];
 	char output_line[MAXBUF];
 	char machine_code[MACH_MAX];
 
 	//Take in input and check that the input is a valid file_name.
 	printf("What file would you like to assemble? :");
-	scanf("%s", file);
+	//scanf("%s", file);
 	if (check_file_validity(file)==0)
 	{
 		exit(1);
@@ -29,6 +30,7 @@ int main(int argc, char *argv[])
 	//Iterate through each line of text from .asm file and extract the text as string.
 	while(fgets(current_line, MAXBUF, file_asm)!=NULL)
 	{	
+		strcpy(current_line2,current_line);
 		//Passed text is evaluated and an approriate output string is created.
 
 		//converts opcodes into machine codes and formats given comments and variables into readable format.
@@ -37,7 +39,7 @@ int main(int argc, char *argv[])
 		address=assemble_line(current_line, address, output_line);
 
 		//object_machine_code converts opcodes into machine code and outputs result as string to be printed into .obj file.
-		object_machine_code(current_line, machine_code);
+		object_machine_code(current_line2, machine_code);
 
 		//Output strings are printed into approriate files.
 		fputs(output_line, file_lst);

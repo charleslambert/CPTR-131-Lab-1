@@ -15,6 +15,8 @@ void object_machine_code(char current_line[], char machine_code[]);
 void create_comment_string(char *current_line, int address,char output_line[]);
 void create_empty_line_string(int address, char output_line[]);
 void create_formatted_line_string(char current_line[], int address, char output_line[]);
+void create_machine_code(char current_line[], char *opcode, char machine_code[]);
+
 
 #define MAXBUF 1024
 #define MACH_MAX 7

@@ -56,7 +56,7 @@ char *trans_opcode(char opcode[], char machine_code[])
 
 	if(strcmp(opcode,OP_0)==0)
 	{
-		strcpy(machine_code,"00 00");
+		strcpy(machine_code,"0    ");
 	}
 	else if(strcmp(opcode,OP_1)==0)
 	{
@@ -104,7 +104,7 @@ char *trans_opcode(char opcode[], char machine_code[])
 	}
 	else if(strcmp(opcode,OP_C)==0)
 	{
-		strcpy(machine_code,"C0 00");
+		strcpy(machine_code,"C    ");
 	}
 	else if(strcmp(opcode,OP_D)==0)
 	{
@@ -116,7 +116,7 @@ char *trans_opcode(char opcode[], char machine_code[])
 	}
 	else
 	{
-		strcpy(machine_code,opcode);
+		strcpy(machine_code,"-1   ");
 	}
 
 	return machine_code;
@@ -144,70 +144,10 @@ int assemble_line(char current_line[], int address, char output_line[])
 void object_machine_code(char current_line[], char machine_code[])
 {
 	char *opcode;
-	char *operands;
-	char *operand;
-
 
 	if(current_line[0]!='\n' && current_line[0]!=';')
 	{
-		opcode = strtok(current_line,"\t");
-		printf("%s\n", opcode);
-		operands = strtok(NULL,"\t");
-		trans_opcode(opcode,machine_code);
-		printf("%c\n",machine_code[0]);
-		if(machine_code[0]>='5' || machine_code[0]<= '9')
-		{
-			exit(0);
-			operand = strtok(operands,",");
-			//printf("%c\n",operand[1]);
-			machine_code[1] = operand[1];
-			
-			operand = strtok(NULL,",");
-			//printf("%c\n",operand[1]);
-			machine_code[3] = operand[1];
-
-			operand = strtok(NULL,",");
-			machine_code[4] = operand[1];
-			exit(0);
-		}
-		else if(machine_code[0]=='4'||machine_code[0]=='D'||machine_code[0]=='E')
-		{
-			operand = strtok(operands,",");
-			machine_code[1] = operand[1];
-			
-			operand = strtok(operands,",");
-			machine_code[3] = operand[2];
-
-			machine_code[4] = '0';
-		}
-		else if((machine_code[0]>='1'||machine_code[0]<='3')||machine_code[0]=='B')
-		{
-			operand = strtok(operands,",");
-			printf("Face\n");
-			machine_code[1] = operand[2];
-			printf("%c",operand[2]);
-
-			exit(0);
-			operand = strtok(operands,",");
-			machine_code[3] = operand[0];
-
-			machine_code[4] = operand[1];
-		}
-		else
-		{
-			printf("dumb");
-		}
-
-		/*operand = strtok(current_line, "\t");
-
-		reference = strok(operand,",");
-		reg_or_val(reference, machine_code);
-
-		while(reference!=NULL)
-		{
-			reg_or_val(reference, machine_code);
-		}
-		*/
+		create_machine_code(current_line, opcode, machine_code);
 
 		sprintf(machine_code,"%s ",machine_code);
 	}
@@ -217,15 +157,51 @@ void object_machine_code(char current_line[], char machine_code[])
 	}
 }
 
-/*
-void reg_or_val(char *reference, char machine_code[])
+void create_machine_code(char current_line[], char *opcode, char machine_code[])
 {
-	if(*reference[0]=='R')
+	char a;
+	char b;
+	char c;
+	char *operands;
+
+	opcode = strtok(current_line,"\t");
+	operands = strtok(NULL,"\t");
+	trans_opcode(opcode,machine_code);
+	if((machine_code[0]>='5') && (machine_code[0]<= '9'))
 	{
-		machine_code[]
+		sscanf(operands,"R%c, R%c, R%c",&a,&b,&c);
+		machine_code[1] = a;
+		machine_code[3] = b;
+		machine_code[4] = c;
+	}
+	else if((machine_code[0]=='4')||(machine_code[0]=='D')||(machine_code[0]=='E'))
+	{
+		sscanf(operands,"R%c, R%c",&a,&b);
+		machine_code[1] = a;
+		machine_code[3] = b;
+		machine_code[4] = '0';
+	}
+	else if(((machine_code[0]>='1')&&(machine_code[0]<='3'))||(machine_code[0]=='B'))
+	{
+		sscanf(operands,"R%c, %c%c",&a,&b,&c);
+		machine_code[1] = a;
+		machine_code[3] = b;
+		machine_code[4] = c;
+	}
+	else if(machine_code[0]=='A')
+	{
+		sscanf(operands,"R%c, %c", &a, &b);
+		machine_code[1] = a;
+		machine_code[3] = '0';
+		machine_code[4] = b;
+ 	}
+	else
+	{
+		machine_code[1] = '0';
+		machine_code[3] = '0';
+		machine_code[4] = '0';
 	}
 }
-*/
 
 
 void create_comment_string(char *current_line, int address,char output_line[])
@@ -244,12 +220,16 @@ void create_formatted_line_string(char current_line[], int address, char output_
 	char *source1;
 	char *source2;
 	char machine_code[MACH_MAX];
+	char current_line2[MAXBUF];
+
+	strcpy(current_line2, current_line);
+
 
 	opcode = strtok(current_line,"\t");
 	source1 = strtok(NULL,"\t");
 	source2 = strtok(NULL,"\t");
-	
-	strcpy(machine_code,trans_opcode(opcode,machine_code));
+	printf("dime\n");
+	create_machine_code(current_line2, opcode, machine_code);
 		
 	if(strcmp(opcode,"HLT")== 0 || strcmp(opcode,"NOP")== 0)
 	{

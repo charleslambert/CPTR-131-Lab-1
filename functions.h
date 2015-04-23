@@ -9,7 +9,7 @@ int check_file_validity(char file_name[]);
 void print_header(FILE *file);
 int delete_ext(char file_name[]);
 char *replace_ext(char file[], char ext[]);
-char *trans_opcode(char opcode[], char machine_code[]);
+int trans_opcode(char opcode[]);
 int assemble_line(char current_line[], int address,char output_line[]);
 void object_machine_code(char current_line[], char machine_code[]);
 void create_comment_string(char *current_line, int address,char output_line[]);

@@ -29,6 +29,8 @@ void print_header(FILE *file)
 
 int delete_ext(char file_name[])
 {
+	//Finds the character derefernces the pointer in order to change
+	//the actual value of the char in the file_name.
 	if (*strrchr(file_name, '.')=='.')
 	{
 		*strrchr(file_name, '.') = 0;
@@ -51,75 +53,76 @@ char *replace_ext(char file[], char ext[])
 	return file_ext;
 }
 
-char *trans_opcode(char opcode[], char machine_code[])
+int trans_opcode(char opcode[])
 {
+	int t_opcode;
 
 	if(strcmp(opcode,OP_0)==0)
 	{
-		strcpy(machine_code,"0    ");
+		t_opcode=0;
 	}
 	else if(strcmp(opcode,OP_1)==0)
 	{
-		strcpy(machine_code,"1    ");
+		t_opcode=1;
 	}
 	else if(strcmp(opcode,OP_2)==0)
 	{
-		strcpy(machine_code,"2    ");
+		t_opcode=2;
 	}
 	else if(strcmp(opcode,OP_3)==0)
 	{
-		strcpy(machine_code,"3    ");
+		t_opcode=3;
 	}
 	else if(strcmp(opcode,OP_4)==0)
 	{
-		strcpy(machine_code,"4    ");
+		t_opcode=4;
 	}
 	else if(strcmp(opcode,OP_5)==0)
 	{
-		strcpy(machine_code,"5    ");
+		t_opcode=5;
 	}
 	else if(strcmp(opcode,OP_6)==0)
 	{
-		strcpy(machine_code,"6    ");
+		t_opcode=6;
 	}
 	else if(strcmp(opcode,OP_7)==0)
 	{
-		strcpy(machine_code,"7    ");
+		t_opcode=7;
 	}
 	else if(strcmp(opcode,OP_8)==0)
 	{
-		strcpy(machine_code,"8    ");
+		t_opcode=8;
 	}
 	else if(strcmp(opcode,OP_9)==0)
 	{
-		strcpy(machine_code,"9    ");
+		t_opcode=9;
 	}
 	else if(strcmp(opcode,OP_A)==0)
 	{
-		strcpy(machine_code,"A    ");
+		t_opcode=10;
 	}
 	else if(strcmp(opcode,OP_B)==0)
 	{
-		strcpy(machine_code,"B    ");
+		t_opcode=11;
 	}
 	else if(strcmp(opcode,OP_C)==0)
 	{
-		strcpy(machine_code,"C    ");
+		t_opcode=12;
 	}
 	else if(strcmp(opcode,OP_D)==0)
 	{
-		strcpy(machine_code,"D    ");
+		t_opcode=13;
 	}
 	else if(strcmp(opcode,OP_E)==0)
 	{
-		strcpy(machine_code,"E    ");
+		t_opcode=14;
 	}
 	else
 	{
-		strcpy(machine_code,"-1   ");
+		t_opcode=-1;
 	}
 
-	return machine_code;
+	return t_opcode;
 }
 
 int assemble_line(char current_line[], int address, char output_line[])
@@ -163,50 +166,46 @@ void create_machine_code(char current_line[], char *opcode, char machine_code[])
 	char b;
 	char c;
 	char *operands;
+	int t_opcode;
 
 	opcode = strtok(current_line,"\t");
 	operands = strtok(NULL,"\t");
-	trans_opcode(opcode,machine_code);
-	if((machine_code[0]>='5') && (machine_code[0]<= '9'))
+	t_opcode = trans_opcode(opcode);
+
+	if((t_opcode >= 5) && (t_opcode <= 9))
 	{
 		sscanf(operands,"R%c, R%c, R%c",&a,&b,&c);
-		machine_code[1] = a;
-		machine_code[3] = b;
-		machine_code[4] = c;
+		sprintf(machine_code,"%X%c %c%c",t_opcode,a,b,c);
 	}
-	else if((machine_code[0]=='4')||(machine_code[0]=='D')||(machine_code[0]=='E'))
+	else if((t_opcode == 4)||(t_opcode == 13)||(t_opcode == 14))
 	{
 		sscanf(operands,"R%c, R%c",&a,&b);
-		machine_code[1] = a;
-		machine_code[3] = b;
-		machine_code[4] = '0';
+		sprintf(machine_code,"%X%c %c0",t_opcode,a,b);
 	}
-	else if(((machine_code[0]>='1')&&(machine_code[0]<='3'))||(machine_code[0]=='B'))
+	else if(((t_opcode >= 1)&&(t_opcode <= 3))||(t_opcode == 11))
 	{
 		sscanf(operands,"R%c, %c%c",&a,&b,&c);
-		machine_code[1] = a;
-		machine_code[3] = b;
-		machine_code[4] = c;
+		sprintf(machine_code,"%X%c %c%c",t_opcode,a,b,c);
 	}
-	else if(machine_code[0]=='A')
+	else if(t_opcode == 10)
 	{
 		sscanf(operands,"R%c, %c", &a, &b);
-		machine_code[1] = a;
-		machine_code[3] = '0';
-		machine_code[4] = b;
+		sprintf(machine_code,"%X%c 0%c",t_opcode,a,b);
  	}
-	else
+ 	else if(t_opcode == -1)
+ 	{
+ 		sprintf(machine_code,"");
+ 	}
+	else 
 	{
-		machine_code[1] = '0';
-		machine_code[3] = '0';
-		machine_code[4] = '0';
+		sprintf(machine_code,"%X0 00",t_opcode);
 	}
 }
 
-
-void create_comment_string(char *current_line, int address,char output_line[])
+void create_comment_string(char *current_line, int address, char output_line[])
 {
-	sprintf(output_line,"%02X\t\t\t%s", address, current_line);
+	*strrchr(current_line,'\n')='\0';
+	sprintf(output_line,"%02X\t\t\t%s\n", address, current_line);
 }
 
 void create_empty_line_string(int address, char output_line[])
@@ -221,23 +220,26 @@ void create_formatted_line_string(char current_line[], int address, char output_
 	char *source2;
 	char machine_code[MACH_MAX];
 	char current_line2[MAXBUF];
+	int t_opcode;
 
 	strcpy(current_line2, current_line);
-
 
 	opcode = strtok(current_line,"\t");
 	source1 = strtok(NULL,"\t");
 	source2 = strtok(NULL,"\t");
-	printf("dime\n");
+	t_opcode = trans_opcode(opcode);
 	create_machine_code(current_line2, opcode, machine_code);
-		
-	if(strcmp(opcode,"HLT")== 0 || strcmp(opcode,"NOP")== 0)
+
+	if(t_opcode == -1)
 	{
-		sprintf(output_line,"%02X\t%s\t%-19s%s",address,machine_code,opcode,source1);
+		sprintf(output_line,"");
+	}
+	else if(t_opcode == 12 || t_opcode == 0)
+	{	
+		sprintf(output_line,"%02X\t%s\t%-19s\t%s",address,machine_code,opcode,source1);
 	}
 	else
 	{
 		sprintf(output_line,"%02X\t%s\t%s\t%-15s%s",address,machine_code,opcode,source1,source2);
 	}
 }
-
